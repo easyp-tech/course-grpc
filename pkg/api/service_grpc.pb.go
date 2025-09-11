@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 
 const (
 	EchoService_HelloWorld_FullMethodName = "/api.EchoService/HelloWorld"
+	EchoService_WithError_FullMethodName  = "/api.EchoService/WithError"
 )
 
 // EchoServiceClient is the client API for EchoService service.
@@ -27,6 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type EchoServiceClient interface {
 	HelloWorld(ctx context.Context, in *EchoRequest, opts ...grpc.CallOption) (*EchoResponse, error)
+	WithError(ctx context.Context, in *EchoRequest, opts ...grpc.CallOption) (*EchoResponse, error)
 }
 
 type echoServiceClient struct {
@@ -46,11 +48,21 @@ func (c *echoServiceClient) HelloWorld(ctx context.Context, in *EchoRequest, opt
 	return out, nil
 }
 
+func (c *echoServiceClient) WithError(ctx context.Context, in *EchoRequest, opts ...grpc.CallOption) (*EchoResponse, error) {
+	out := new(EchoResponse)
+	err := c.cc.Invoke(ctx, EchoService_WithError_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // EchoServiceServer is the server API for EchoService service.
 // All implementations should embed UnimplementedEchoServiceServer
 // for forward compatibility
 type EchoServiceServer interface {
 	HelloWorld(context.Context, *EchoRequest) (*EchoResponse, error)
+	WithError(context.Context, *EchoRequest) (*EchoResponse, error)
 }
 
 // UnimplementedEchoServiceServer should be embedded to have forward compatible implementations.
@@ -59,6 +71,9 @@ type UnimplementedEchoServiceServer struct {
 
 func (UnimplementedEchoServiceServer) HelloWorld(context.Context, *EchoRequest) (*EchoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method HelloWorld not implemented")
+}
+func (UnimplementedEchoServiceServer) WithError(context.Context, *EchoRequest) (*EchoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WithError not implemented")
 }
 
 // UnsafeEchoServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -90,6 +105,24 @@ func _EchoService_HelloWorld_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _EchoService_WithError_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EchoRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EchoServiceServer).WithError(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: EchoService_WithError_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EchoServiceServer).WithError(ctx, req.(*EchoRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // EchoService_ServiceDesc is the grpc.ServiceDesc for EchoService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -100,6 +133,10 @@ var EchoService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "HelloWorld",
 			Handler:    _EchoService_HelloWorld_Handler,
+		},
+		{
+			MethodName: "WithError",
+			Handler:    _EchoService_WithError_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

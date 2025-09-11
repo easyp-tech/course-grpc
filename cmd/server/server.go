@@ -11,11 +11,13 @@ import (
 	"time"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/health"
 	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/keepalive"
 	"google.golang.org/grpc/reflection"
+	"google.golang.org/grpc/status"
 
 	pb "github.com/easyp-tech/course-grpc/pkg/api"
 )
@@ -33,6 +35,21 @@ type server struct {
 func (s *server) HelloWorld(ctx context.Context, req *pb.EchoRequest) (*pb.EchoResponse, error) {
 	log.Printf("Request: %s", req.GetMessage())
 	return &pb.EchoResponse{Message: "pong"}, nil
+}
+
+func (s *server) WithError(ctx context.Context, in *pb.EchoRequest) (*pb.EchoResponse, error) {
+	// формируем кастомную ошибку
+	st := status.New(codes.FailedPrecondition, "Custom error")
+	errMsg := &pb.CustomError{Reason: "some reason"}
+
+	var err error
+	// дополняем ее деталями: которые содержат структуру сообщения из proto файла.
+	st, err = st.WithDetails(errMsg)
+	if err != nil {
+		return nil, err
+	}
+
+	return nil, st.Err()
 }
 
 func main() {

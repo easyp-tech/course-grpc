@@ -13,6 +13,24 @@ class Service(service_pb2_grpc.EchoServiceServicer):
         print('called: ', request)
         return service_pb2.EchoResponse(message='pong')
 
+    def WithError(self, request, context):
+        print('Called with error')
+
+        # формируем кастомную ошибку
+        error_message = service_pb2.CustomError(reason='[PYTHON] some reason')
+
+        detail = any_pb2.Any()
+        detail.Pack(error_message)
+
+        # Создаем статус
+        # дополняем ее деталями: которые содержат структуру сообщения из proto файла.
+        status = rpc_status.status_pb2.Status(
+            code=grpc.StatusCode.FAILED_PRECONDITION.value[0],
+            message='[PYTHON] Custom error',
+            details=[detail]
+        )
+        context.abort_with_status(rpc_status.to_status(status))
+
 def serve():
     # https://grpc.github.io/grpc/python/grpc.html#grpc.server
     server = grpc.server(
