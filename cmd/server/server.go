@@ -12,6 +12,8 @@ import (
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/health"
+	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/keepalive"
 	"google.golang.org/grpc/reflection"
 
@@ -56,6 +58,14 @@ func main() {
 
 	// Регистрируем наш обработчик
 	pb.RegisterEchoServiceServer(s, &server{})
+
+	// Создаем healthcheck
+	healthServer := health.NewServer()
+	// Регистрируем healthcheck
+	healthpb.RegisterHealthServer(s, healthServer)
+
+	// Выставляем статус хелсчека
+	healthServer.SetServingStatus("", healthpb.HealthCheckResponse_SERVING)
 
 	// Подключаем рефлексию для возможности использовать grpcurl и прочие утилиты для запросов
 	reflection.Register(s)
