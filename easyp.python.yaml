@@ -1,0 +1,11 @@
+generate:
+  inputs:
+    - directory: "api"
+  plugins:
+    - name: python
+      out: ./python
+
+    - name: python-grpc
+      out: ./python
+      opts:
+        paths: source_relative
