@@ -6,10 +6,25 @@ from grpc_status import rpc_status
 from api import service_pb2_grpc
 from api import service_pb2
 
+class LoggingClientInterceptor(grpc.UnaryUnaryClientInterceptor):
+    def intercept_unary_unary(self, continuation, client_call_details, request):
+        start_time = time.time()
+
+        try:
+            response = continuation(client_call_details, request)
+            duration = time.time() - start_time
+            print(f"[INTERCEPTOR STAT] {client_call_details.method} completed in {duration:.3f}s")
+            return response
+        except grpc.RpcError as e:
+            duration = time.time() - start_time
+            print(f"[INTERCEPTOR STAT] {client_call_details.method} failed after {duration:.3f}s: {e}")
+            raise
+
 def run():
     # Создаем канал и клиент
     channel = grpc.intercept_channel(
         grpc.insecure_channel('localhost:5001'),
+        LoggingClientInterceptor(),
     )
     client = service_pb2_grpc.EchoServiceStub(channel)
 

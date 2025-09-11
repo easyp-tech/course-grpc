@@ -8,6 +8,20 @@ from google.protobuf import any_pb2
 from api import service_pb2_grpc
 from api import service_pb2
 
+
+class InterceptorStat(grpc.ServerInterceptor):
+    def intercept_service(self, continuation, handler_call_details: grpc.HandlerCallDetails) -> grpc.RpcMethodHandler:
+        """Базовый интерсептор для униарных вызовов"""
+        method_handler = continuation(handler_call_details)
+
+        start_time = time.time()
+        res = method_handler
+        duration = time.time() - start_time
+        print(f"[INTERCEPTOR STAT] {handler_call_details.method} completed in {duration:.3f}s")
+
+        return res
+
+
 class Service(service_pb2_grpc.EchoServiceServicer):
     def HelloWorld(self, request, context):
         print('called: ', request)
@@ -36,6 +50,7 @@ def serve():
     server = grpc.server(
         futures.ThreadPoolExecutor(max_workers=10),
         maximum_concurrent_rpcs=10,
+        interceptors=[InterceptorStat()],
     )
     service_pb2_grpc.add_EchoServiceServicer_to_server(
         Service(), server

@@ -7,15 +7,54 @@ import (
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 
 	pb "github.com/easyp-tech/course-grpc/pkg/api"
 )
 
+func interceptorStat(
+	ctx context.Context,
+	method string,
+	req, reply interface{},
+	cc *grpc.ClientConn,
+	invoker grpc.UnaryInvoker,
+	opts ...grpc.CallOption,
+) error {
+	// Pre-processing
+	start := time.Now()
+	log.Printf("[INTERCEPTOR STAT] Calling: %s", method)
+
+	// Добавляем кастомные заголовки
+	ctx = metadata.AppendToOutgoingContext(ctx,
+		"client-timestamp", time.Now().Format(time.RFC3339),
+		"user-agent", "my-grpc-client/1.0",
+	)
+
+	// Вызов сервера
+	err := invoker(ctx, method, req, reply, cc, opts...)
+
+	// Post-processing
+	duration := time.Since(start)
+	if err != nil {
+		if st, ok := status.FromError(err); ok {
+			log.Printf("[INTERCEPTOR STAT] %s failed after %v: code=%s, message=%s",
+				method, duration, st.Code(), st.Message())
+		} else {
+			log.Printf("[INTERCEPTOR STAT] %s failed after %v: %v", method, duration, err)
+		}
+	} else {
+		log.Printf("[INTERCEPTOR STAT] %s completed in %v", method, duration)
+	}
+
+	return err
+}
+
 func main() {
 	conn, err := grpc.NewClient(
 		"127.0.0.1:5001",
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithChainUnaryInterceptor(interceptorStat),
 	)
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)

@@ -52,6 +52,35 @@ func (s *server) WithError(ctx context.Context, in *pb.EchoRequest) (*pb.EchoRes
 	return nil, st.Err()
 }
 
+func interceptorLog(
+	ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler,
+) (interface{}, error) {
+	log.Printf("[INTERCEPTOR LOG] Request: %s", info.FullMethod)
+
+	resp, err := handler(ctx, req)
+	return resp, err
+}
+
+func interceptorStat(
+	ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler,
+) (interface{}, error) {
+	// Pre-processing
+	start := time.Now()
+
+	// Вызов обработчика
+	resp, err := handler(ctx, req)
+
+	// Вычисляыем время выполенния
+	duration := time.Since(start)
+	if err != nil {
+		log.Printf("[INTERCEPTOR STAT] %s failed after %v: %v", info.FullMethod, duration, err)
+	} else {
+		log.Printf("[INTERCEPTOR STAT] %s completed in %v", info.FullMethod, duration)
+	}
+
+	return resp, err
+}
+
 func main() {
 	l, err := net.Listen("tcp", ":5001")
 	if err != nil {
@@ -71,6 +100,11 @@ func main() {
 			MinTime:             keepaliveMinTime,
 			PermitWithoutStream: true,
 		}),
+		// Создаем интерсепторы
+		grpc.ChainUnaryInterceptor(
+			interceptorStat,
+			interceptorLog,
+		),
 	)
 
 	// Регистрируем наш обработчик
