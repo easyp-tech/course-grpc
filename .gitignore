@@ -1,0 +1,11 @@
+.idea
+certs
+.env
+bin
+easyp
+coverage.out
+.DS_Store
+dist/
+easyp_vendor/
+*.pyc
+__pycache__/
