@@ -7,6 +7,7 @@ import (
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/keepalive"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 
@@ -55,6 +56,18 @@ func main() {
 		"127.0.0.1:5001",
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithChainUnaryInterceptor(interceptorStat),
+		grpc.WithKeepaliveParams(keepalive.ClientParameters{
+			Time:                10 * time.Second,
+			Timeout:             3 * time.Second,
+			PermitWithoutStream: true,
+		}),
+		grpc.WithDefaultCallOptions(
+			grpc.MaxCallRecvMsgSize(16*1024*1024),
+			grpc.MaxCallSendMsgSize(8*1024*1024),
+			grpc.WaitForReady(false),
+		),
+		grpc.WithReadBufferSize(64*1024),
+		grpc.WithWriteBufferSize(64*1024),
 	)
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
