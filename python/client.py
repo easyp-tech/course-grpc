@@ -3,8 +3,8 @@ import time
 import grpc
 from grpc_status import rpc_status
 
-from api import service_pb2_grpc
-from api import service_pb2
+from api.v1 import service_pb2_grpc
+from api.v1 import service_pb2
 
 class LoggingClientInterceptor(grpc.UnaryUnaryClientInterceptor):
     def intercept_unary_unary(self, continuation, client_call_details, request):
@@ -26,7 +26,7 @@ def run():
         grpc.insecure_channel('localhost:5001'),
         LoggingClientInterceptor(),
     )
-    client = service_pb2_grpc.EchoServiceStub(channel)
+    client = service_pb2_grpc.EchoAPIStub(channel)
 
     try:
         # Отправляем первый запрос

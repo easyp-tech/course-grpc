@@ -11,7 +11,7 @@ import (
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 
-	pb "github.com/easyp-tech/course-grpc/pkg/api"
+	pb "github.com/easyp-tech/course-grpc/pkg/api/v1"
 )
 
 func interceptorStat(
@@ -74,7 +74,7 @@ func main() {
 	}
 	defer conn.Close()
 
-	c := pb.NewEchoServiceClient(conn)
+	c := pb.NewEchoAPIClient(conn)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*2)
 	defer cancel()

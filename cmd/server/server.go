@@ -19,7 +19,7 @@ import (
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
 
-	pb "github.com/easyp-tech/course-grpc/pkg/api"
+	pb "github.com/easyp-tech/course-grpc/pkg/api/v1"
 )
 
 const (
@@ -29,7 +29,7 @@ const (
 )
 
 type server struct {
-	pb.UnimplementedEchoServiceServer
+	pb.UnimplementedEchoAPIServer
 }
 
 func (s *server) HelloWorld(ctx context.Context, req *pb.EchoRequest) (*pb.EchoResponse, error) {
@@ -108,7 +108,7 @@ func main() {
 	)
 
 	// Регистрируем наш обработчик
-	pb.RegisterEchoServiceServer(s, &server{})
+	pb.RegisterEchoAPIServer(s, &server{})
 
 	// Создаем healthcheck
 	healthServer := health.NewServer()

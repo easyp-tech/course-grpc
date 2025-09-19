@@ -5,8 +5,8 @@ import grpc
 from grpc_status import rpc_status
 from google.protobuf import any_pb2
 
-from api import service_pb2_grpc
-from api import service_pb2
+from api.v1 import service_pb2_grpc
+from api.v1 import service_pb2
 
 
 class InterceptorStat(grpc.ServerInterceptor):
@@ -22,7 +22,7 @@ class InterceptorStat(grpc.ServerInterceptor):
         return res
 
 
-class Service(service_pb2_grpc.EchoServiceServicer):
+class Service(service_pb2_grpc.EchoAPIServicer):
     def HelloWorld(self, request, context):
         print('called: ', request)
         return service_pb2.EchoResponse(message='pong')
@@ -52,7 +52,7 @@ def serve():
         maximum_concurrent_rpcs=10,
         interceptors=[InterceptorStat()],
     )
-    service_pb2_grpc.add_EchoServiceServicer_to_server(
+    service_pb2_grpc.add_EchoAPIServicer_to_server(
         Service(), server
     )
     server.add_insecure_port('[::]:5001')
