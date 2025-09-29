@@ -1,4 +1,3 @@
 github.com/bufbuild/protovalidate v0.3.1 h1:kTUVlT0nWxYy+sZc8r10PCYtCUkhgfMn3Rp7gh5h0Lw=
-github.com/easyp-tech/easyp-demo-service after_changes h1:qvPPchYk5kGDs4LbXGEWfn+pAKoQAp1netTeopk/MVI=
-github.com/googleapis/googleapis v0.0.0-20250807162944-c5334a83d6966439a2273a4ef64e6779ffba97a1 h1:d3JKVew1O56HkhxIA3JQgAjjLViWLaMIfrdF6IGgsZA=
+github.com/googleapis/googleapis v0.0.0-20250924113800-329ace5e3712a2e37d6159d4dcd998d8c73f261e h1:mCmNSVCf8cF0Uh0/GHYTqfUigJeVQr8DSG48KreIGnY=
 github.com/sipki-tech/currency v0.1.2 h1:CXCqZnOEKWMNFrB9n2eZanWOQkRTxAAijMFUjd/7ZQM=

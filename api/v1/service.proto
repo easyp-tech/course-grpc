@@ -4,6 +4,8 @@ option go_package = "github.com/easyp-tech/course-grpc/pkg/api/v1";
 
 package api.v1;
 
+import "buf/validate/validate.proto";
+
 enum Events {
   EVENTS_NONE = 0;
   EVENTS_CREATED = 1;
@@ -14,8 +16,54 @@ message CustomError {
   string reason = 1;
 }
 
+message CreateOrder {
+  string product_id = 1[
+    // принимаем строку только в формате UUID
+    (buf.validate.field).string.uuid = true,
+    (buf.validate.field).required = true
+  ];
+  uint32 count = 2[
+    // значение должно быть срого больше 0
+    (buf.validate.field).uint32.gt=0,
+    (buf.validate.field).required = true
+  ];
+};
+
+// https://protovalidate.com/schemas/standard-rules/
+message CreateOrdersRequest {
+  repeated CreateOrder create_order = 1 [
+    // мин. кол-ко элементов в массиве - 1
+    (buf.validate.field).repeated.min_items = 1
+  ];
+  optional string user_id = 2 [
+    (buf.validate.field).string.uuid = true
+  ];
+  optional string user_email = 3 [
+    (buf.validate.field).string.email = true
+  ];
+
+  option (buf.validate.message).cel = {
+    id: "id_or_email_should_be_present",
+    message: "user_id or user_email should be present",
+    // ожидаем что получим или только айди пользователя или только его почту, но точно должно быть что-то одно
+    expression: "(has(this.user_id) && !has(this.user_email)) || (!has(this.user_id) && has(this.user_email))",
+  };
+
+  // Аналогично проверке выше, ожидаем что одно из значений должно быть в запросе
+  oneof PaymentType {
+    option (buf.validate.oneof).required = true;
+
+    bool cache = 4;
+    bool credit = 5;
+  }
+}
+
+message CreateOrderResponse {};
+
 message EchoRequest {
-  string message = 1;
+  string message = 1 [
+    (buf.validate.field).string.min_len = 10
+  ];
 };
 
 message EchoResponse {
@@ -25,4 +73,5 @@ message EchoResponse {
 service EchoAPI {
   rpc HelloWorld(EchoRequest) returns(EchoResponse) {}
   rpc WithError(EchoRequest) returns(EchoResponse) {}
+  rpc CreateOrder(CreateOrdersRequest) returns(CreateOrderResponse) {}
 }

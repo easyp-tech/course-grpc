@@ -5,6 +5,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/google/uuid"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/keepalive"
@@ -80,16 +81,40 @@ func main() {
 	defer cancel()
 
 	// Отправляем первый запрос
-	respHelloWorld, err := c.HelloWorld(ctx, &pb.EchoRequest{Message: "ping"})
+	respHelloWorld, err := c.HelloWorld(ctx, &pb.EchoRequest{Message: "ping123456789"})
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)
 	}
 	log.Printf("Response Hello World: %s", respHelloWorld.Message)
 
-	// Отправляем второй запрос, в котором будет кастомная ошибка
-	respWithError, err := c.WithError(ctx, &pb.EchoRequest{Message: "hello world"})
+	// create request 1
+	createOrder1 := &pb.CreateOrder{
+		ProductId: uuid.NewString(),
+		Count:     15,
+	}
+	// create request 2
+	createOrder2 := &pb.CreateOrder{
+		ProductId: uuid.NewString(),
+		//ProductId: "dsfsdf",
+		Count: 15,
+	}
+	orders := []*pb.CreateOrder{createOrder1, createOrder2}
+	_ = orders
+
+	userEmail := "user@mail.loc"
+	_ = userEmail
+
+	userID := uuid.New().String()
+	_ = userID
+
+	createOrderRequest := &pb.CreateOrdersRequest{
+		CreateOrder: []*pb.CreateOrder{createOrder1, createOrder2},
+		UserEmail:   &userEmail,
+		//UserId:      &userID,
+	}
+
+	resp, err := c.CreateOrder(ctx, createOrderRequest)
 	if err != nil {
-		// проверяем что полученная ошибка это ошибка сообщение от сервера gRPC, а не, например, сетевая ошибка
 		st, ok := status.FromError(err)
 		if !ok {
 			log.Fatalf("status.FromError: %v", err)
@@ -103,7 +128,5 @@ func main() {
 			}
 		}
 	}
-
-	// тут ожидаемо будет nil, т.к запрос вернул ошибку
-	log.Printf("Response WithError: %v", respWithError)
+	log.Printf("resp: %v", resp)
 }

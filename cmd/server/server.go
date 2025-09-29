@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"log"
 	"net"
 	"os"
@@ -10,6 +11,8 @@ import (
 	"syscall"
 	"time"
 
+	"buf.build/go/protovalidate"
+	protovalidate_middleware "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/protovalidate"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"
@@ -28,13 +31,45 @@ const (
 	keepaliveMinTime = 30 * time.Second
 )
 
+type usecases interface {
+	CreateOrder(ctx context.Context, productID string, count int) error
+}
+
 type server struct {
 	pb.UnimplementedEchoAPIServer
+
+	usecases usecases
 }
 
 func (s *server) HelloWorld(ctx context.Context, req *pb.EchoRequest) (*pb.EchoResponse, error) {
+	if err := protovalidate.Validate(req); err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	} else {
+		log.Printf("Validation OK")
+	}
+
 	log.Printf("Request: %s", req.GetMessage())
 	return &pb.EchoResponse{Message: "pong"}, nil
+}
+
+func (s *server) CreateOrder(ctx context.Context, req *pb.CreateOrdersRequest) (*pb.CreateOrderResponse, error) {
+	for _, createOrder := range req.GetCreateOrder() {
+		if err := s.usecases.CreateOrder(ctx, createOrder.ProductId, int(createOrder.Count)); err != nil {
+			st := status.New(codes.FailedPrecondition, "Custom error")
+			errMsg := &pb.CustomError{Reason: err.Error()}
+
+			var err error
+			// дополняем ее деталями: которые содержат структуру сообщения из proto файла.
+			st, err = st.WithDetails(errMsg)
+			if err != nil {
+				return nil, err
+			}
+
+			return nil, st.Err()
+		}
+	}
+
+	return &pb.CreateOrderResponse{}, nil
 }
 
 func (s *server) WithError(ctx context.Context, in *pb.EchoRequest) (*pb.EchoResponse, error) {
@@ -87,6 +122,15 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// создание валидатора
+	validator, err := protovalidate.New()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// инитим интерсептор
+	interceptorValidator := protovalidate_middleware.UnaryServerInterceptor(validator)
+
 	// Создание gRPC сервера с параметрами
 	s := grpc.NewServer(
 		grpc.Creds(insecure.NewCredentials()),
@@ -104,11 +148,12 @@ func main() {
 		grpc.ChainUnaryInterceptor(
 			interceptorStat,
 			interceptorLog,
+			interceptorValidator,
 		),
 	)
 
 	// Регистрируем наш обработчик
-	pb.RegisterEchoAPIServer(s, &server{})
+	pb.RegisterEchoAPIServer(s, &server{usecases: &Usecases{}})
 
 	// Создаем healthcheck
 	healthServer := health.NewServer()
@@ -142,4 +187,14 @@ func main() {
 	// после получения сигнала останавливаем сервер
 	s.GracefulStop()
 	wg.Wait()
+}
+
+type Usecases struct {
+}
+
+func (u *Usecases) CreateOrder(ctx context.Context, productID string, count int) error {
+	if count > 10 {
+		return errors.New("there are more than one order")
+	}
+	return nil
 }

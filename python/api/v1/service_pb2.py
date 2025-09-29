@@ -22,9 +22,10 @@ _runtime_version.ValidateProtobufRuntimeVersion(
 _sym_db = _symbol_database.Default()
 
 
+from buf.validate import validate_pb2 as buf_dot_validate_dot_validate__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x14\x61pi/v1/service.proto\x12\x06\x61pi.v1\"\x1d\n\x0b\x43ustomError\x12\x0e\n\x06reason\x18\x01 \x01(\t\"\x1e\n\x0b\x45\x63hoRequest\x12\x0f\n\x07message\x18\x01 \x01(\t\"\x1f\n\x0c\x45\x63hoResponse\x12\x0f\n\x07message\x18\x01 \x01(\t2~\n\x07\x45\x63hoAPI\x12\x39\n\nHelloWorld\x12\x13.api.v1.EchoRequest\x1a\x14.api.v1.EchoResponse\"\x00\x12\x38\n\tWithError\x12\x13.api.v1.EchoRequest\x1a\x14.api.v1.EchoResponse\"\x00\x42.Z,github.com/easyp-tech/course-grpc/pkg/api/v1b\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x14\x61pi/v1/service.proto\x12\x06\x61pi.v1\x1a\x1b\x62uf/validate/validate.proto\"\x1d\n\x0b\x43ustomError\x12\x0e\n\x06reason\x18\x01 \x01(\t\"\'\n\x0b\x45\x63hoRequest\x12\x18\n\x07message\x18\x01 \x01(\tB\x07\xbaH\x04r\x02\x10\n\"\x1f\n\x0c\x45\x63hoResponse\x12\x0f\n\x07message\x18\x01 \x01(\t*A\n\x06\x45vents\x12\x0f\n\x0b\x45VENTS_NONE\x10\x00\x12\x12\n\x0e\x45VENTS_CREATED\x10\x01\x12\x12\n\x0e\x45VENTS_UPDATED\x10\x02\x32~\n\x07\x45\x63hoAPI\x12\x39\n\nHelloWorld\x12\x13.api.v1.EchoRequest\x1a\x14.api.v1.EchoResponse\"\x00\x12\x38\n\tWithError\x12\x13.api.v1.EchoRequest\x1a\x14.api.v1.EchoResponse\"\x00\x42.Z,github.com/easyp-tech/course-grpc/pkg/api/v1b\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -32,12 +33,16 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'api.v1.service_pb2', _globa
 if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
   _globals['DESCRIPTOR']._serialized_options = b'Z,github.com/easyp-tech/course-grpc/pkg/api/v1'
-  _globals['_CUSTOMERROR']._serialized_start=32
-  _globals['_CUSTOMERROR']._serialized_end=61
-  _globals['_ECHOREQUEST']._serialized_start=63
-  _globals['_ECHOREQUEST']._serialized_end=93
-  _globals['_ECHORESPONSE']._serialized_start=95
-  _globals['_ECHORESPONSE']._serialized_end=126
-  _globals['_ECHOAPI']._serialized_start=128
-  _globals['_ECHOAPI']._serialized_end=254
+  _globals['_ECHOREQUEST'].fields_by_name['message']._loaded_options = None
+  _globals['_ECHOREQUEST'].fields_by_name['message']._serialized_options = b'\272H\004r\002\020\n'
+  _globals['_EVENTS']._serialized_start=166
+  _globals['_EVENTS']._serialized_end=231
+  _globals['_CUSTOMERROR']._serialized_start=61
+  _globals['_CUSTOMERROR']._serialized_end=90
+  _globals['_ECHOREQUEST']._serialized_start=92
+  _globals['_ECHOREQUEST']._serialized_end=131
+  _globals['_ECHORESPONSE']._serialized_start=133
+  _globals['_ECHORESPONSE']._serialized_end=164
+  _globals['_ECHOAPI']._serialized_start=233
+  _globals['_ECHOAPI']._serialized_end=359
 # @@protoc_insertion_point(module_scope)
