@@ -26,13 +26,13 @@
               "type": "object",
               "properties": {
                 "result": {
-                  "$ref": "#/definitions/streamv1EchoResponse"
+                  "$ref": "#/definitions/apistreamv1EchoResponse"
                 },
                 "error": {
                   "$ref": "#/definitions/rpcStatus"
                 }
               },
-              "title": "Stream result of streamv1EchoResponse"
+              "title": "Stream result of apistreamv1EchoResponse"
             }
           },
           "default": {
@@ -49,7 +49,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/streamv1EchoRequest"
+              "$ref": "#/definitions/apistreamv1EchoRequest"
             }
           }
         ],
@@ -68,13 +68,13 @@
               "type": "object",
               "properties": {
                 "result": {
-                  "$ref": "#/definitions/streamv1EchoResponse"
+                  "$ref": "#/definitions/apistreamv1EchoResponse"
                 },
                 "error": {
                   "$ref": "#/definitions/rpcStatus"
                 }
               },
-              "title": "Stream result of streamv1EchoResponse"
+              "title": "Stream result of apistreamv1EchoResponse"
             }
           },
           "default": {
@@ -91,7 +91,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/streamv1EchoRequest"
+              "$ref": "#/definitions/apistreamv1EchoRequest"
             }
           }
         ],
@@ -107,7 +107,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/streamv1EchoResponse"
+              "$ref": "#/definitions/apistreamv1EchoResponse"
             }
           },
           "default": {
@@ -124,7 +124,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/streamv1EchoRequest"
+              "$ref": "#/definitions/apistreamv1EchoRequest"
             }
           }
         ],
@@ -143,13 +143,13 @@
               "type": "object",
               "properties": {
                 "result": {
-                  "$ref": "#/definitions/streamv1EchoResponse"
+                  "$ref": "#/definitions/apistreamv1EchoResponse"
                 },
                 "error": {
                   "$ref": "#/definitions/rpcStatus"
                 }
               },
-              "title": "Stream result of streamv1EchoResponse"
+              "title": "Stream result of apistreamv1EchoResponse"
             }
           },
           "default": {
@@ -165,7 +165,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/streamv1EchoRequest"
+              "$ref": "#/definitions/apistreamv1EchoRequest"
             }
           }
         ],
@@ -176,6 +176,22 @@
     }
   },
   "definitions": {
+    "apistreamv1EchoRequest": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "apistreamv1EchoResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
     "protobufAny": {
       "type": "object",
       "properties": {
@@ -201,22 +217,6 @@
             "type": "object",
             "$ref": "#/definitions/protobufAny"
           }
-        }
-      }
-    },
-    "streamv1EchoRequest": {
-      "type": "object",
-      "properties": {
-        "message": {
-          "type": "string"
-        }
-      }
-    },
-    "streamv1EchoResponse": {
-      "type": "object",
-      "properties": {
-        "message": {
-          "type": "string"
         }
       }
     }

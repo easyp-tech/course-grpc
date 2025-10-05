@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "github.com/easyp-tech/easyp-demo/pkg/api/stream/v1";
+option go_package = "github.com/easyp-tech/course-grpc/pkg/api/stream/v1";
 
 package api.stream.v1;
 

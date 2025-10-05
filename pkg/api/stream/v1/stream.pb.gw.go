@@ -84,6 +84,9 @@ func request_EchoService_EchoServerStream_0(ctx context.Context, marshaler runti
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	stream, err := client.EchoServerStream(ctx, &protoReq)
 	if err != nil {
 		return nil, metadata, err
@@ -96,14 +99,12 @@ func request_EchoService_EchoServerStream_0(ctx context.Context, marshaler runti
 	return stream, metadata, nil
 }
 
-func request_EchoService_EchoBidirectionalStreamSync_0(ctx context.Context, marshaler runtime.Marshaler, client EchoServiceClient, req *http.Request, pathParams map[string]string) (EchoService_EchoBidirectionalStreamSyncClient, runtime.ServerMetadata, chan error, error) {
+func request_EchoService_EchoBidirectionalStreamSync_0(ctx context.Context, marshaler runtime.Marshaler, client EchoServiceClient, req *http.Request, pathParams map[string]string) (EchoService_EchoBidirectionalStreamSyncClient, runtime.ServerMetadata, error) {
 	var metadata runtime.ServerMetadata
-	errChan := make(chan error, 1)
 	stream, err := client.EchoBidirectionalStreamSync(ctx)
 	if err != nil {
 		grpclog.Errorf("Failed to start streaming: %v", err)
-		close(errChan)
-		return nil, metadata, errChan, err
+		return nil, metadata, err
 	}
 	dec := marshaler.NewDecoder(req.Body)
 	handleSend := func() error {
@@ -123,10 +124,8 @@ func request_EchoService_EchoBidirectionalStreamSync_0(ctx context.Context, mars
 		return nil
 	}
 	go func() {
-		defer close(errChan)
 		for {
 			if err := handleSend(); err != nil {
-				errChan <- err
 				break
 			}
 		}
@@ -137,20 +136,18 @@ func request_EchoService_EchoBidirectionalStreamSync_0(ctx context.Context, mars
 	header, err := stream.Header()
 	if err != nil {
 		grpclog.Errorf("Failed to get header from client: %v", err)
-		return nil, metadata, errChan, err
+		return nil, metadata, err
 	}
 	metadata.HeaderMD = header
-	return stream, metadata, errChan, nil
+	return stream, metadata, nil
 }
 
-func request_EchoService_EchoBidirectionalStreamAsync_0(ctx context.Context, marshaler runtime.Marshaler, client EchoServiceClient, req *http.Request, pathParams map[string]string) (EchoService_EchoBidirectionalStreamAsyncClient, runtime.ServerMetadata, chan error, error) {
+func request_EchoService_EchoBidirectionalStreamAsync_0(ctx context.Context, marshaler runtime.Marshaler, client EchoServiceClient, req *http.Request, pathParams map[string]string) (EchoService_EchoBidirectionalStreamAsyncClient, runtime.ServerMetadata, error) {
 	var metadata runtime.ServerMetadata
-	errChan := make(chan error, 1)
 	stream, err := client.EchoBidirectionalStreamAsync(ctx)
 	if err != nil {
 		grpclog.Errorf("Failed to start streaming: %v", err)
-		close(errChan)
-		return nil, metadata, errChan, err
+		return nil, metadata, err
 	}
 	dec := marshaler.NewDecoder(req.Body)
 	handleSend := func() error {
@@ -170,10 +167,8 @@ func request_EchoService_EchoBidirectionalStreamAsync_0(ctx context.Context, mar
 		return nil
 	}
 	go func() {
-		defer close(errChan)
 		for {
 			if err := handleSend(); err != nil {
-				errChan <- err
 				break
 			}
 		}
@@ -184,10 +179,10 @@ func request_EchoService_EchoBidirectionalStreamAsync_0(ctx context.Context, mar
 	header, err := stream.Header()
 	if err != nil {
 		grpclog.Errorf("Failed to get header from client: %v", err)
-		return nil, metadata, errChan, err
+		return nil, metadata, err
 	}
 	metadata.HeaderMD = header
-	return stream, metadata, errChan, nil
+	return stream, metadata, nil
 }
 
 // RegisterEchoServiceHandlerServer registers the http handlers for service EchoService to "mux".
@@ -306,20 +301,12 @@ func RegisterEchoServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
-		resp, md, reqErrChan, err := request_EchoService_EchoBidirectionalStreamSync_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_EchoService_EchoBidirectionalStreamSync_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		go func() {
-			for err := range reqErrChan {
-				if err != nil && !errors.Is(err, io.EOF) {
-					runtime.HTTPStreamError(annotatedContext, mux, outboundMarshaler, w, req, err)
-				}
-			}
-		}()
 		forward_EchoService_EchoBidirectionalStreamSync_0(annotatedContext, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 	})
 	mux.Handle(http.MethodPost, pattern_EchoService_EchoBidirectionalStreamAsync_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -331,20 +318,12 @@ func RegisterEchoServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
-		resp, md, reqErrChan, err := request_EchoService_EchoBidirectionalStreamAsync_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_EchoService_EchoBidirectionalStreamAsync_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		go func() {
-			for err := range reqErrChan {
-				if err != nil && !errors.Is(err, io.EOF) {
-					runtime.HTTPStreamError(annotatedContext, mux, outboundMarshaler, w, req, err)
-				}
-			}
-		}()
 		forward_EchoService_EchoBidirectionalStreamAsync_0(annotatedContext, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 	})
 	return nil
