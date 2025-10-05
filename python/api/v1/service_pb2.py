@@ -25,7 +25,7 @@ _sym_db = _symbol_database.Default()
 from buf.validate import validate_pb2 as buf_dot_validate_dot_validate__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x14\x61pi/v1/service.proto\x12\x06\x61pi.v1\x1a\x1b\x62uf/validate/validate.proto\"\x1d\n\x0b\x43ustomError\x12\x0e\n\x06reason\x18\x01 \x01(\t\"\'\n\x0b\x45\x63hoRequest\x12\x18\n\x07message\x18\x01 \x01(\tB\x07\xbaH\x04r\x02\x10\n\"\x1f\n\x0c\x45\x63hoResponse\x12\x0f\n\x07message\x18\x01 \x01(\t*A\n\x06\x45vents\x12\x0f\n\x0b\x45VENTS_NONE\x10\x00\x12\x12\n\x0e\x45VENTS_CREATED\x10\x01\x12\x12\n\x0e\x45VENTS_UPDATED\x10\x02\x32~\n\x07\x45\x63hoAPI\x12\x39\n\nHelloWorld\x12\x13.api.v1.EchoRequest\x1a\x14.api.v1.EchoResponse\"\x00\x12\x38\n\tWithError\x12\x13.api.v1.EchoRequest\x1a\x14.api.v1.EchoResponse\"\x00\x42.Z,github.com/easyp-tech/course-grpc/pkg/api/v1b\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x14\x61pi/v1/service.proto\x12\x06\x61pi.v1\x1a\x1b\x62uf/validate/validate.proto\"\x1d\n\x0b\x43ustomError\x12\x0e\n\x06reason\x18\x01 \x01(\t\"I\n\x0b\x43reateOrder\x12\x1f\n\nproduct_id\x18\x01 \x01(\tB\x0b\xbaH\x08r\x03\xb0\x01\x01\xc8\x01\x01\x12\x19\n\x05\x63ount\x18\x02 \x01(\rB\n\xbaH\x07*\x02 \x00\xc8\x01\x01\"\x90\x03\n\x13\x43reateOrdersRequest\x12\x33\n\x0c\x63reate_order\x18\x01 \x03(\x0b\x32\x13.api.v1.CreateOrderB\x08\xbaH\x05\x92\x01\x02\x08\x01\x12\x1e\n\x07user_id\x18\x02 \x01(\tB\x08\xbaH\x05r\x03\xb0\x01\x01H\x01\x88\x01\x01\x12 \n\nuser_email\x18\x03 \x01(\tB\x07\xbaH\x04r\x02`\x01H\x02\x88\x01\x01\x12\x0f\n\x05\x63\x61\x63he\x18\x04 \x01(\x08H\x00\x12\x10\n\x06\x63redit\x18\x05 \x01(\x08H\x00:\xad\x01\xbaH\xa9\x01\x1a\xa6\x01\n\x1did_or_email_should_be_present\x12\'user_id or user_email should be present\x1a\\(has(this.user_id) && !has(this.user_email)) || (!has(this.user_id) && has(this.user_email))B\x14\n\x0bPaymentType\x12\x05\xbaH\x02\x08\x01\x42\n\n\x08_user_idB\r\n\x0b_user_email\"\x15\n\x13\x43reateOrderResponse\"\'\n\x0b\x45\x63hoRequest\x12\x18\n\x07message\x18\x01 \x01(\tB\x07\xbaH\x04r\x02\x10\n\"\x1f\n\x0c\x45\x63hoResponse\x12\x0f\n\x07message\x18\x01 \x01(\t*A\n\x06\x45vents\x12\x0f\n\x0b\x45VENTS_NONE\x10\x00\x12\x12\n\x0e\x45VENTS_CREATED\x10\x01\x12\x12\n\x0e\x45VENTS_UPDATED\x10\x02\x32\xc9\x01\n\x07\x45\x63hoAPI\x12\x39\n\nHelloWorld\x12\x13.api.v1.EchoRequest\x1a\x14.api.v1.EchoResponse\"\x00\x12\x38\n\tWithError\x12\x13.api.v1.EchoRequest\x1a\x14.api.v1.EchoResponse\"\x00\x12I\n\x0b\x43reateOrder\x12\x1b.api.v1.CreateOrdersRequest\x1a\x1b.api.v1.CreateOrderResponse\"\x00\x42.Z,github.com/easyp-tech/course-grpc/pkg/api/v1b\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -33,16 +33,36 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'api.v1.service_pb2', _globa
 if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
   _globals['DESCRIPTOR']._serialized_options = b'Z,github.com/easyp-tech/course-grpc/pkg/api/v1'
+  _globals['_CREATEORDER'].fields_by_name['product_id']._loaded_options = None
+  _globals['_CREATEORDER'].fields_by_name['product_id']._serialized_options = b'\272H\010r\003\260\001\001\310\001\001'
+  _globals['_CREATEORDER'].fields_by_name['count']._loaded_options = None
+  _globals['_CREATEORDER'].fields_by_name['count']._serialized_options = b'\272H\007*\002 \000\310\001\001'
+  _globals['_CREATEORDERSREQUEST'].oneofs_by_name['PaymentType']._loaded_options = None
+  _globals['_CREATEORDERSREQUEST'].oneofs_by_name['PaymentType']._serialized_options = b'\272H\002\010\001'
+  _globals['_CREATEORDERSREQUEST'].fields_by_name['create_order']._loaded_options = None
+  _globals['_CREATEORDERSREQUEST'].fields_by_name['create_order']._serialized_options = b'\272H\005\222\001\002\010\001'
+  _globals['_CREATEORDERSREQUEST'].fields_by_name['user_id']._loaded_options = None
+  _globals['_CREATEORDERSREQUEST'].fields_by_name['user_id']._serialized_options = b'\272H\005r\003\260\001\001'
+  _globals['_CREATEORDERSREQUEST'].fields_by_name['user_email']._loaded_options = None
+  _globals['_CREATEORDERSREQUEST'].fields_by_name['user_email']._serialized_options = b'\272H\004r\002`\001'
+  _globals['_CREATEORDERSREQUEST']._loaded_options = None
+  _globals['_CREATEORDERSREQUEST']._serialized_options = b'\272H\251\001\032\246\001\n\035id_or_email_should_be_present\022\'user_id or user_email should be present\032\\(has(this.user_id) && !has(this.user_email)) || (!has(this.user_id) && has(this.user_email))'
   _globals['_ECHOREQUEST'].fields_by_name['message']._loaded_options = None
   _globals['_ECHOREQUEST'].fields_by_name['message']._serialized_options = b'\272H\004r\002\020\n'
-  _globals['_EVENTS']._serialized_start=166
-  _globals['_EVENTS']._serialized_end=231
+  _globals['_EVENTS']._serialized_start=667
+  _globals['_EVENTS']._serialized_end=732
   _globals['_CUSTOMERROR']._serialized_start=61
   _globals['_CUSTOMERROR']._serialized_end=90
-  _globals['_ECHOREQUEST']._serialized_start=92
-  _globals['_ECHOREQUEST']._serialized_end=131
-  _globals['_ECHORESPONSE']._serialized_start=133
-  _globals['_ECHORESPONSE']._serialized_end=164
-  _globals['_ECHOAPI']._serialized_start=233
-  _globals['_ECHOAPI']._serialized_end=359
+  _globals['_CREATEORDER']._serialized_start=92
+  _globals['_CREATEORDER']._serialized_end=165
+  _globals['_CREATEORDERSREQUEST']._serialized_start=168
+  _globals['_CREATEORDERSREQUEST']._serialized_end=568
+  _globals['_CREATEORDERRESPONSE']._serialized_start=570
+  _globals['_CREATEORDERRESPONSE']._serialized_end=591
+  _globals['_ECHOREQUEST']._serialized_start=593
+  _globals['_ECHOREQUEST']._serialized_end=632
+  _globals['_ECHORESPONSE']._serialized_start=634
+  _globals['_ECHORESPONSE']._serialized_end=665
+  _globals['_ECHOAPI']._serialized_start=735
+  _globals['_ECHOAPI']._serialized_end=936
 # @@protoc_insertion_point(module_scope)

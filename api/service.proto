@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option go_package = "github.com/easyp-tech/easyp-demo/pkg/api";
+
+package api;
+
+message CustomError {
+  string reason = 1;
+}
+
+message EchoRequest {
+  string message = 1;
+};
+
+message EchoResponse {
+  string message = 1;
+};
+
+service EchoService {
+  rpc HelloWorld(EchoRequest) returns(EchoResponse) {}
+  rpc WithError(EchoRequest) returns(EchoResponse) {}
+}

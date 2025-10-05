@@ -24,6 +24,11 @@ class EchoAPIStub(object):
                 request_serializer=api_dot_v1_dot_service__pb2.EchoRequest.SerializeToString,
                 response_deserializer=api_dot_v1_dot_service__pb2.EchoResponse.FromString,
                 )
+        self.CreateOrder = channel.unary_unary(
+                '/api.v1.EchoAPI/CreateOrder',
+                request_serializer=api_dot_v1_dot_service__pb2.CreateOrdersRequest.SerializeToString,
+                response_deserializer=api_dot_v1_dot_service__pb2.CreateOrderResponse.FromString,
+                )
 
 
 class EchoAPIServicer(object):
@@ -41,6 +46,12 @@ class EchoAPIServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def CreateOrder(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_EchoAPIServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -53,6 +64,11 @@ def add_EchoAPIServicer_to_server(servicer, server):
                     servicer.WithError,
                     request_deserializer=api_dot_v1_dot_service__pb2.EchoRequest.FromString,
                     response_serializer=api_dot_v1_dot_service__pb2.EchoResponse.SerializeToString,
+            ),
+            'CreateOrder': grpc.unary_unary_rpc_method_handler(
+                    servicer.CreateOrder,
+                    request_deserializer=api_dot_v1_dot_service__pb2.CreateOrdersRequest.FromString,
+                    response_serializer=api_dot_v1_dot_service__pb2.CreateOrderResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -95,5 +111,22 @@ class EchoAPI(object):
         return grpc.experimental.unary_unary(request, target, '/api.v1.EchoAPI/WithError',
             api_dot_v1_dot_service__pb2.EchoRequest.SerializeToString,
             api_dot_v1_dot_service__pb2.EchoResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def CreateOrder(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/api.v1.EchoAPI/CreateOrder',
+            api_dot_v1_dot_service__pb2.CreateOrdersRequest.SerializeToString,
+            api_dot_v1_dot_service__pb2.CreateOrderResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

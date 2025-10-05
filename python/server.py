@@ -4,11 +4,9 @@ import time
 import grpc
 from grpc_status import rpc_status
 from google.protobuf import any_pb2
-import protovalidate
 
-from api.v1 import service_pb2_grpc
-from api.v1 import service_pb2
-
+from api import service_pb2_grpc
+from api import service_pb2
 
 class InterceptorStat(grpc.ServerInterceptor):
     def intercept_service(self, continuation, handler_call_details: grpc.HandlerCallDetails) -> grpc.RpcMethodHandler:
@@ -23,14 +21,9 @@ class InterceptorStat(grpc.ServerInterceptor):
         return res
 
 
-class Service(service_pb2_grpc.EchoAPIServicer):
+class Service(service_pb2_grpc.EchoServiceServicer):
     def HelloWorld(self, request, context):
         print('called: ', request)
-        try:
-            protovalidate.validate(request)
-        except Exception as exc:
-            print(f'exc: {exc}')
-            raise
         return service_pb2.EchoResponse(message='pong')
 
     def WithError(self, request, context):
@@ -58,7 +51,7 @@ def serve():
         maximum_concurrent_rpcs=10,
         interceptors=[InterceptorStat()],
     )
-    service_pb2_grpc.add_EchoAPIServicer_to_server(
+    service_pb2_grpc.add_EchoServiceServicer_to_server(
         Service(), server
     )
     server.add_insecure_port('[::]:5001')

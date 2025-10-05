@@ -1,0 +1,224 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "api/stream/v1/stream.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "api.stream.v1.EchoService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api.stream.v1.EchoService/EchoBidirectionalStreamAsync": {
+      "post": {
+        "operationId": "EchoService_EchoBidirectionalStreamAsync",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/streamv1EchoResponse"
+                },
+                "error": {
+                  "$ref": "#/definitions/rpcStatus"
+                }
+              },
+              "title": "Stream result of streamv1EchoResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": " (streaming inputs)",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/streamv1EchoRequest"
+            }
+          }
+        ],
+        "tags": [
+          "api.stream.v1.EchoService"
+        ]
+      }
+    },
+    "/api.stream.v1.EchoService/EchoBidirectionalStreamSync": {
+      "post": {
+        "operationId": "EchoService_EchoBidirectionalStreamSync",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/streamv1EchoResponse"
+                },
+                "error": {
+                  "$ref": "#/definitions/rpcStatus"
+                }
+              },
+              "title": "Stream result of streamv1EchoResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": " (streaming inputs)",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/streamv1EchoRequest"
+            }
+          }
+        ],
+        "tags": [
+          "api.stream.v1.EchoService"
+        ]
+      }
+    },
+    "/api.stream.v1.EchoService/EchoClientStream": {
+      "post": {
+        "operationId": "EchoService_EchoClientStream",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/streamv1EchoResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": " (streaming inputs)",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/streamv1EchoRequest"
+            }
+          }
+        ],
+        "tags": [
+          "api.stream.v1.EchoService"
+        ]
+      }
+    },
+    "/api.stream.v1.EchoService/EchoServerStream": {
+      "post": {
+        "operationId": "EchoService_EchoServerStream",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/streamv1EchoResponse"
+                },
+                "error": {
+                  "$ref": "#/definitions/rpcStatus"
+                }
+              },
+              "title": "Stream result of streamv1EchoResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/streamv1EchoRequest"
+            }
+          }
+        ],
+        "tags": [
+          "api.stream.v1.EchoService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "streamv1EchoRequest": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "streamv1EchoResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
