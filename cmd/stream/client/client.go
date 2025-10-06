@@ -295,7 +295,7 @@ func main() {
 	log.Println("Starting gRPC Echo Stream Client...")
 
 	// Create client
-	client, err := NewClient("localhost:8080")
+	client, err := NewClient("nginx-proxy:8080")
 	if err != nil {
 		log.Fatalf("Failed to create client: %v", err)
 	}

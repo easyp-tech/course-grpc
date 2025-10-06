@@ -175,7 +175,7 @@ func (a *API) EchoBidirectionalStreamAsync(streamServer stream.EchoService_EchoB
 func main() {
 	log.Println("Starting gRPC Echo Stream Server...")
 
-	lis, err := net.Listen("tcp", ":8080")
+	lis, err := net.Listen("tcp", "0.0.0.0:8080")
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
 	}

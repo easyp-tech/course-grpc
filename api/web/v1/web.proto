@@ -1,12 +1,12 @@
- syntax = "proto3";
- package your.service.v1;
- option go_package = "github.com/yourorg/yourprotos/gen/go/your/service/v1";
+syntax = "proto3";
+package your.service.v1;
+option go_package = "github.com/yourorg/yourprotos/gen/go/your/service/v1";
 
 import "google/api/annotations.proto";
 
- message StringMessage {
-   string value = 1;
- }
+message StringMessage {
+  string value = 1;
+}
 
 service YourService {
  rpc Echo(StringMessage) returns (StringMessage) {
@@ -14,7 +14,7 @@ service YourService {
       post: "/v1/example/echo"
       body: "*"
     };
-}
+  }
 
   rpc EchoStream(stream StringMessage) returns (stream StringMessage) {
      option (google.api.http) = {

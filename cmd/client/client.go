@@ -54,7 +54,7 @@ func interceptorStat(
 
 func main() {
 	conn, err := grpc.NewClient(
-		"127.0.0.1:5001",
+		"nginx-proxy:5001",
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithChainUnaryInterceptor(interceptorStat),
 		grpc.WithKeepaliveParams(keepalive.ClientParameters{

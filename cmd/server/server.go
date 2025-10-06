@@ -117,7 +117,7 @@ func interceptorStat(
 }
 
 func main() {
-	l, err := net.Listen("tcp", ":5001")
+	l, err := net.Listen("tcp", "0.0.0.0:5001")
 	if err != nil {
 		log.Fatal(err)
 	}

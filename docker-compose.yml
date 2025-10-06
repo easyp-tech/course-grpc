@@ -1,0 +1,87 @@
+services:
+  # Nginx reverse proxy with load balancing
+  nginx-proxy:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5001" # Main gRPC server proxy
+      - "8080:8080" # Stream gRPC server proxy
+      - "80:80" # Health check endpoint
+    depends_on:
+      - grpc-server-1
+      - grpc-server-2
+      - stream-server-1
+      - stream-server-2
+    networks:
+      - grpc-network
+
+  # Main gRPC server instances (2 replicas for load balancing)
+  grpc-server-1:
+    build:
+      context: .
+      dockerfile: ./cmd/server/Dockerfile
+    expose:
+      - "5001"
+    networks:
+      - grpc-network
+    environment:
+      - SERVER_ID=server-1
+
+  grpc-server-2:
+    build:
+      context: .
+      dockerfile: ./cmd/server/Dockerfile
+    expose:
+      - "5001"
+    networks:
+      - grpc-network
+    environment:
+      - SERVER_ID=server-2
+
+  # Stream gRPC server instances (2 replicas for load balancing)
+  stream-server-1:
+    build:
+      context: .
+      dockerfile: ./cmd/stream/Dockerfile
+    expose:
+      - "8080"
+    networks:
+      - grpc-network
+    environment:
+      - SERVER_ID=stream-server-1
+
+  stream-server-2:
+    build:
+      context: .
+      dockerfile: ./cmd/stream/Dockerfile
+    expose:
+      - "8080"
+    networks:
+      - grpc-network
+    environment:
+      - SERVER_ID=stream-server-2
+
+  # Main gRPC client (connects through nginx proxy)
+  grpc-client:
+    build:
+      context: .
+      dockerfile: ./cmd/client/Dockerfile
+    depends_on:
+      - nginx-proxy
+    networks:
+      - grpc-network
+
+  # Stream gRPC client (connects through nginx proxy)
+  stream-client:
+    build:
+      context: .
+      dockerfile: ./cmd/stream/client/Dockerfile
+    depends_on:
+      - nginx-proxy
+    networks:
+      - grpc-network
+
+networks:
+  grpc-network:
+    driver: bridge
